@@ -19,3 +19,5 @@ logs/
 ./utils/nms/*.so
 ./utils/bbox/*.so
 
+# Ignore DS_Store
+.DS_Store

@@ -29,22 +29,15 @@ _NP_INCLUDE_DIRS = np.get_include()
 # Extension modules
 ext_modules = [
     Extension(
-        name='cython_nms',
-        sources=[
-            './cython_nms.pyx'
-        ],
-        extra_compile_args=[
-            '-Wno-cpp'
-        ],
-        include_dirs=[
-            _NP_INCLUDE_DIRS
-        ]
+        name="cython_nms",
+        sources=["./cython_nms.pyx"],
+        extra_compile_args=["-Wno-cpp"],
+        include_dirs=[_NP_INCLUDE_DIRS],
     )
 ]
 
 setup(
-    name='Detectron',
-    #packages=['detectron'],
-    ext_modules=cythonize(ext_modules)
+    name="Detectron",
+    # packages=['detectron'],
+    ext_modules=cythonize(ext_modules),
 )
-

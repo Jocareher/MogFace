@@ -16,44 +16,50 @@ from IPython import embed
 
 
 def get_gt_boxes(gt_dir):
-    """ gt dir: (wider_face_val.mat, wider_easy_val.mat, wider_medium_val.mat, wider_hard_val.mat)"""
+    """gt dir: (wider_face_val.mat, wider_easy_val.mat, wider_medium_val.mat, wider_hard_val.mat)"""
 
-    gt_mat = loadmat(os.path.join(gt_dir, 'wider_face_val.mat'))
-    hard_mat = loadmat(os.path.join(gt_dir, 'wider_hard_val.mat'))
-    medium_mat = loadmat(os.path.join(gt_dir, 'wider_medium_val.mat'))
-    easy_mat = loadmat(os.path.join(gt_dir, 'wider_easy_val.mat'))
+    gt_mat = loadmat(os.path.join(gt_dir, "wider_face_val.mat"))
+    hard_mat = loadmat(os.path.join(gt_dir, "wider_hard_val.mat"))
+    medium_mat = loadmat(os.path.join(gt_dir, "wider_medium_val.mat"))
+    easy_mat = loadmat(os.path.join(gt_dir, "wider_easy_val.mat"))
 
-    facebox_list = gt_mat['face_bbx_list']
-    event_list = gt_mat['event_list']
-    file_list = gt_mat['file_list']
+    facebox_list = gt_mat["face_bbx_list"]
+    event_list = gt_mat["event_list"]
+    file_list = gt_mat["file_list"]
 
-    hard_gt_list = hard_mat['gt_list']
-    medium_gt_list = medium_mat['gt_list']
-    easy_gt_list = easy_mat['gt_list']
+    hard_gt_list = hard_mat["gt_list"]
+    medium_gt_list = medium_mat["gt_list"]
+    easy_gt_list = easy_mat["gt_list"]
 
-    return facebox_list, event_list, file_list, hard_gt_list, medium_gt_list, easy_gt_list
+    return (
+        facebox_list,
+        event_list,
+        file_list,
+        hard_gt_list,
+        medium_gt_list,
+        easy_gt_list,
+    )
 
 
 def get_gt_boxes_from_txt(gt_path, cache_dir):
-
-    cache_file = os.path.join(cache_dir, 'gt_cache.pkl')
+    cache_file = os.path.join(cache_dir, "gt_cache.pkl")
     if os.path.exists(cache_file):
-        f = open(cache_file, 'rb')
+        f = open(cache_file, "rb")
         boxes = pickle.load(f)
         f.close()
         return boxes
 
-    f = open(gt_path, 'r')
+    f = open(gt_path, "r")
     state = 0
     lines = f.readlines()
-    lines = list(map(lambda x: x.rstrip('\r\n'), lines))
+    lines = list(map(lambda x: x.rstrip("\r\n"), lines))
     boxes = {}
     print(len(lines))
     f.close()
     current_boxes = []
     current_name = None
     for line in lines:
-        if state == 0 and '--' in line:
+        if state == 0 and "--" in line:
             state = 1
             current_name = line
             continue
@@ -61,33 +67,34 @@ def get_gt_boxes_from_txt(gt_path, cache_dir):
             state = 2
             continue
 
-        if state == 2 and '--' in line:
+        if state == 2 and "--" in line:
             state = 1
-            boxes[current_name] = np.array(current_boxes).astype('float32')
+            boxes[current_name] = np.array(current_boxes).astype("float32")
             current_name = line
             current_boxes = []
             continue
 
         if state == 2:
-            box = [float(x) for x in line.split(' ')[:4]]
+            box = [float(x) for x in line.split(" ")[:4]]
             current_boxes.append(box)
             continue
 
-    f = open(cache_file, 'wb')
+    f = open(cache_file, "wb")
     pickle.dump(boxes, f)
     f.close()
     return boxes
 
 
 def read_pred_file(filepath):
-
-    with open(filepath, 'r') as f:
+    with open(filepath, "r") as f:
         lines = f.readlines()
-        img_file = lines[0].rstrip('\n\r')
+        img_file = lines[0].rstrip("\n\r")
         lines = lines[2:]
 
-    boxes = np.array(list(map(lambda x: [float(a) for a in x.rstrip('\r\n').split(' ')], lines))).astype('float')
-    return img_file.split('/')[-1], boxes
+    boxes = np.array(
+        list(map(lambda x: [float(a) for a in x.rstrip("\r\n").split(" ")], lines))
+    ).astype("float")
+    return img_file.split("/")[-1], boxes
 
 
 def get_preds(pred_dir):
@@ -96,19 +103,19 @@ def get_preds(pred_dir):
     pbar = tqdm.tqdm(events)
 
     for event in pbar:
-        pbar.set_description('Reading Predictions ')
+        pbar.set_description("Reading Predictions ")
         event_dir = os.path.join(pred_dir, event)
         event_images = os.listdir(event_dir)
         current_event = dict()
         for imgtxt in event_images:
             imgname, _boxes = read_pred_file(os.path.join(event_dir, imgtxt))
-            current_event[imgname.rstrip('.jpg')] = _boxes
+            current_event[imgname.rstrip(".jpg")] = _boxes
         boxes[event] = current_event
     return boxes
 
 
 def norm_score(pred):
-    """ norm score
+    """norm score
     pred {key: [[x1,y1,x2,y2,s]]}
     """
 
@@ -129,11 +136,11 @@ def norm_score(pred):
         for _, v in k.items():
             if len(v) == 0:
                 continue
-            v[:, -1] = (v[:, -1] - min_score)/diff
+            v[:, -1] = (v[:, -1] - min_score) / diff
 
 
 def image_eval(pred, gt, ignore, iou_thresh):
-    """ single image evaluation
+    """single image evaluation
     pred: Nx5
     gt: Nx4
     ignore:
@@ -153,7 +160,6 @@ def image_eval(pred, gt, ignore, iou_thresh):
     overlaps = bbox_overlaps(_pred[:, :4], _gt)
 
     for h in range(_pred.shape[0]):
-
         gt_overlap = overlaps[h]
         max_overlap, max_idx = gt_overlap.max(), gt_overlap.argmax()
         if max_overlap >= iou_thresh:
@@ -169,17 +175,16 @@ def image_eval(pred, gt, ignore, iou_thresh):
 
 
 def img_pr_info(thresh_num, pred_info, proposal_list, pred_recall):
-    pr_info = np.zeros((thresh_num, 2)).astype('float')
+    pr_info = np.zeros((thresh_num, 2)).astype("float")
     for t in range(thresh_num):
-
-        thresh = 1 - (t+1)/thresh_num
+        thresh = 1 - (t + 1) / thresh_num
         r_index = np.where(pred_info[:, 4] >= thresh)[0]
         if len(r_index) == 0:
             pr_info[t, 0] = 0
             pr_info[t, 1] = 0
         else:
             r_index = r_index[-1]
-            p_index = np.where(proposal_list[:r_index+1] == 1)[0]
+            p_index = np.where(proposal_list[: r_index + 1] == 1)[0]
             pr_info[t, 0] = len(p_index)
             pr_info[t, 1] = pred_recall[r_index]
     return pr_info
@@ -194,11 +199,10 @@ def dataset_pr_info(thresh_num, pr_curve, count_face):
 
 
 def voc_ap(rec, prec):
-
     # correct AP calculation
     # first append sentinel values at the end
-    mrec = np.concatenate(([0.], rec, [1.]))
-    mpre = np.concatenate(([0.], prec, [0.]))
+    mrec = np.concatenate(([0.0], rec, [1.0]))
+    mpre = np.concatenate(([0.0], prec, [0.0]))
 
     # compute the precision envelope
     for i in range(mpre.size - 1, 0, -1):
@@ -216,21 +220,28 @@ def voc_ap(rec, prec):
 def evaluation(pred, gt_path, iou_thresh=0.5):
     pred = get_preds(pred)
     norm_score(pred)
-    facebox_list, event_list, file_list, hard_gt_list, medium_gt_list, easy_gt_list = get_gt_boxes(gt_path)
+    (
+        facebox_list,
+        event_list,
+        file_list,
+        hard_gt_list,
+        medium_gt_list,
+        easy_gt_list,
+    ) = get_gt_boxes(gt_path)
     event_num = len(event_list)
     thresh_num = 1000
-    settings = ['easy', 'medium', 'hard']
+    settings = ["easy", "medium", "hard"]
     setting_gts = [easy_gt_list, medium_gt_list, hard_gt_list]
     aps = []
     for setting_id in range(3):
         # different setting
         gt_list = setting_gts[setting_id]
         count_face = 0
-        pr_curve = np.zeros((thresh_num, 2)).astype('float')
+        pr_curve = np.zeros((thresh_num, 2)).astype("float")
         # [hard, medium, easy]
         pbar = tqdm.tqdm(range(event_num))
         for i in pbar:
-            pbar.set_description('Processing {}'.format(settings[setting_id]))
+            pbar.set_description("Processing {}".format(settings[setting_id]))
             event_name = str(event_list[i][0][0])
             img_list = file_list[i][0]
             pred_list = pred[event_name]
@@ -241,7 +252,7 @@ def evaluation(pred, gt_path, iou_thresh=0.5):
             for j in range(len(img_list)):
                 pred_info = pred_list[str(img_list[j][0][0])]
 
-                gt_boxes = gt_bbx_list[j][0].astype('float')
+                gt_boxes = gt_bbx_list[j][0].astype("float")
                 keep_index = sub_gt_list[j][0]
                 count_face += len(keep_index)
 
@@ -249,10 +260,14 @@ def evaluation(pred, gt_path, iou_thresh=0.5):
                     continue
                 ignore = np.zeros(gt_boxes.shape[0])
                 if len(keep_index) != 0:
-                    ignore[keep_index-1] = 1
-                pred_recall, proposal_list = image_eval(pred_info, gt_boxes, ignore, iou_thresh)
+                    ignore[keep_index - 1] = 1
+                pred_recall, proposal_list = image_eval(
+                    pred_info, gt_boxes, ignore, iou_thresh
+                )
 
-                _img_pr_info = img_pr_info(thresh_num, pred_info, proposal_list, pred_recall)
+                _img_pr_info = img_pr_info(
+                    thresh_num, pred_info, proposal_list, pred_recall
+                )
 
                 pr_curve += _img_pr_info
         pr_curve = dataset_pr_info(thresh_num, pr_curve, count_face)
@@ -263,26 +278,14 @@ def evaluation(pred, gt_path, iou_thresh=0.5):
         ap = voc_ap(recall, propose)
         aps.append(ap)
 
-    #print("==================== Results ====================")
-    #print("Easy   Val AP: {}".format(aps[0]))
-    #print("Medium Val AP: {}".format(aps[1]))
-    #print("Hard   Val AP: {}".format(aps[2]))
-    #print("=================================================")
+    # print("==================== Results ====================")
+    # print("Easy   Val AP: {}".format(aps[0]))
+    # print("Medium Val AP: {}".format(aps[1]))
+    # print("Hard   Val AP: {}".format(aps[2]))
+    # print("=================================================")
     return aps[0], aps[1], aps[2]
 
 
 def eval_map(pred, gt):
     map_easy, map_meidum, map_hard = evaluation(pred, gt)
     return map_easy, map_meidum, map_hard
-
-
-
-
-
-
-
-
-
-
-
-

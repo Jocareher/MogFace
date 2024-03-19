@@ -3,7 +3,7 @@
 # Last modified : 2020-01-13 20:46
 # Email         : gxly1314@gmail.com
 # Filename      : __init__.py
-# Description   : 
+# Description   :
 # ******************************************************
 from . import generate_anchors
 from . import anchor_target

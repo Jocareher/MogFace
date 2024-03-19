@@ -18,7 +18,7 @@ import inspect
 import yaml
 from .schema import SharedConfig
 
-__all__ = ['serializable', 'Callable']
+__all__ = ["serializable", "Callable"]
 
 
 def _make_python_constructor(cls):
@@ -31,8 +31,11 @@ def _make_python_constructor(cls):
             try:
                 return cls(**kwargs)
             except Exception as ex:
-                print("Error when construct {} instance from yaml config".
-                      format(cls.__name__))
+                print(
+                    "Error when construct {} instance from yaml config".format(
+                        cls.__name__
+                    )
+                )
                 raise ex
 
     return python_constructor
@@ -40,20 +43,20 @@ def _make_python_constructor(cls):
 
 def _make_python_representer(cls):
     # python 2 compatibility
-    if hasattr(inspect, 'getfullargspec'):
+    if hasattr(inspect, "getfullargspec"):
         argspec = inspect.getfullargspec(cls)
     else:
         argspec = inspect.getargspec(cls.__init__)
-    argnames = [arg for arg in argspec.args if arg != 'self']
+    argnames = [arg for arg in argspec.args if arg != "self"]
 
     def python_representer(dumper, obj):
         if argnames:
             data = {name: getattr(obj, name) for name in argnames}
         else:
             data = obj.__dict__
-        if '_id' in data:
-            del data['_id']
-        return dumper.represent_mapping(u'!{}'.format(cls.__name__), data)
+        if "_id" in data:
+            del data["_id"]
+        return dumper.represent_mapping("!{}".format(cls.__name__), data)
 
     return python_representer
 
@@ -68,14 +71,12 @@ def serializable(cls):
 
     Returns: cls
     """
-    yaml.add_constructor(u'!{}'.format(cls.__name__),
-                         _make_python_constructor(cls))
+    yaml.add_constructor("!{}".format(cls.__name__), _make_python_constructor(cls))
     yaml.add_representer(cls, _make_python_representer(cls))
     return cls
 
 
-yaml.add_representer(SharedConfig,
-                     lambda d, o: d.represent_data(o.default_value))
+yaml.add_representer(SharedConfig, lambda d, o: d.represent_data(o.default_value))
 
 
 @serializable
@@ -94,15 +95,15 @@ class Callable(object):
         self.kwargs = kwargs
 
     def __call__(self):
-        if '.' in self.full_type:
-            idx = self.full_type.rfind('.')
+        if "." in self.full_type:
+            idx = self.full_type.rfind(".")
             module = importlib.import_module(self.full_type[:idx])
-            func_name = self.full_type[idx + 1:]
+            func_name = self.full_type[idx + 1 :]
         else:
             try:
-                module = importlib.import_module('builtins')
+                module = importlib.import_module("builtins")
             except Exception:
-                module = importlib.import_module('__builtin__')
+                module = importlib.import_module("__builtin__")
             func_name = self.full_type
 
         func = getattr(module, func_name)

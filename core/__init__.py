@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#import ppdet.modeling
-#import ppdet.optimizer
-#import ppdet.data
+# import ppdet.modeling
+# import ppdet.optimizer
+# import ppdet.data
 from __future__ import absolute_import
 import data
 from modelling import *
