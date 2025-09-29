@@ -1,9 +1,9 @@
 numpy
-torch==1.5.0
+torch
 opencv-python
 pyyaml
 scipy
-torchvision==0.6.0
+torchvision
 tensorboardX
 six
 tqdm
