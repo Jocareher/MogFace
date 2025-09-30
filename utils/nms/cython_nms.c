@@ -2808,7 +2808,6 @@ static CYTHON_INLINE __pyx_t_5numpy_float32_t __pyx_f_10cython_nms_min(__pyx_t_5
 /* #### Code section: typeinfo ### */
 static const __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t = { "float32_t", NULL, sizeof(__pyx_t_5numpy_float32_t), { 0 }, 0, 'R', 0, 0 };
 static const __Pyx_TypeInfo __Pyx_TypeInfo_nn___pyx_t_5numpy_intp_t = { "intp_t", NULL, sizeof(__pyx_t_5numpy_intp_t), { 0 }, 0, __PYX_IS_UNSIGNED(__pyx_t_5numpy_intp_t) ? 'U' : 'I', __PYX_IS_UNSIGNED(__pyx_t_5numpy_intp_t), 0 };
-static const __Pyx_TypeInfo __Pyx_TypeInfo_float = { "float", NULL, sizeof(float), { 0 }, 0, 'R', 0, 0 };
 /* #### Code section: before_global_var ### */
 #define __Pyx_MODULE_NAME "cython_nms"
 extern int __pyx_module_is_main_cython_nms;
@@ -2840,7 +2839,6 @@ static const char __pyx_k_y1[] = "y1";
 static const char __pyx_k_y2[] = "y2";
 static const char __pyx_k_exp[] = "exp";
 static const char __pyx_k_i_2[] = "i";
-static const char __pyx_k_int[] = "int";
 static const char __pyx_k_ix1[] = "ix1";
 static const char __pyx_k_ix2[] = "ix2";
 static const char __pyx_k_iy1[] = "iy1";
@@ -2863,6 +2861,7 @@ static const char __pyx_k_copy[] = "copy";
 static const char __pyx_k_dets[] = "dets";
 static const char __pyx_k_func[] = "__func__";
 static const char __pyx_k_inds[] = "inds";
+static const char __pyx_k_intp[] = "intp";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "__name__";
 static const char __pyx_k_spec[] = "__spec__";
@@ -3045,8 +3044,8 @@ static __pyx_mstatetype * const __pyx_mstate_global = &__pyx_mstate_global_stati
 #define __pyx_n_u_ih __pyx_string_tab[27]
 #define __pyx_n_u_inds __pyx_string_tab[28]
 #define __pyx_n_u_initializing __pyx_string_tab[29]
-#define __pyx_n_u_int __pyx_string_tab[30]
-#define __pyx_n_u_inter __pyx_string_tab[31]
+#define __pyx_n_u_inter __pyx_string_tab[30]
+#define __pyx_n_u_intp __pyx_string_tab[31]
 #define __pyx_n_u_is_coroutine __pyx_string_tab[32]
 #define __pyx_n_u_iw __pyx_string_tab[33]
 #define __pyx_n_u_ix1 __pyx_string_tab[34]
@@ -5415,14 +5414,14 @@ static PyObject *__pyx_pf_10cython_nms_nms(CYTHON_UNUSED PyObject *__pyx_self, P
  * 
  *     cdef int ndets = dets.shape[0]             # <<<<<<<<<<<<<<
  *     cdef np.ndarray[np.intp_t, ndim=1] suppressed = \
- *             np.zeros((ndets), dtype=np.int)
+ *             np.zeros((ndets), dtype=np.intp)
 */
   __pyx_v_ndets = (__pyx_f_5numpy_7ndarray_5shape_shape(((PyArrayObject *)__pyx_v_dets))[0]);
 
   /* "cython_nms.pyx":49
  *     cdef int ndets = dets.shape[0]
  *     cdef np.ndarray[np.intp_t, ndim=1] suppressed = \
- *             np.zeros((ndets), dtype=np.int)             # <<<<<<<<<<<<<<
+ *             np.zeros((ndets), dtype=np.intp)             # <<<<<<<<<<<<<<
  * 
  *     # nominal indices
 */
@@ -5436,7 +5435,7 @@ static PyObject *__pyx_pf_10cython_nms_nms(CYTHON_UNUSED PyObject *__pyx_self, P
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_np); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_int); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_7 = __Pyx_PyObject_GetAttrStr(__pyx_t_6, __pyx_mstate_global->__pyx_n_u_intp); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 49, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   __pyx_t_4 = 1;
@@ -6098,7 +6097,7 @@ static PyObject *__pyx_pf_10cython_nms_2soft_nms(CYTHON_UNUSED PyObject *__pyx_s
   __pyx_pybuffernd_boxes_in.rcbuffer = &__pyx_pybuffer_boxes_in;
   {
     __Pyx_BufFmt_StackElem __pyx_stack[1];
-    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_boxes_in.rcbuffer->pybuffer, (PyObject*)__pyx_v_boxes_in, &__Pyx_TypeInfo_float, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 95, __pyx_L1_error)
+    if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_boxes_in.rcbuffer->pybuffer, (PyObject*)__pyx_v_boxes_in, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float32_t, PyBUF_FORMAT| PyBUF_STRIDES, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 95, __pyx_L1_error)
   }
   __pyx_pybuffernd_boxes_in.diminfo[0].strides = __pyx_pybuffernd_boxes_in.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_boxes_in.diminfo[0].shape = __pyx_pybuffernd_boxes_in.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_boxes_in.diminfo[1].strides = __pyx_pybuffernd_boxes_in.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_boxes_in.diminfo[1].shape = __pyx_pybuffernd_boxes_in.rcbuffer->pybuffer.shape[1];
 
@@ -8238,7 +8237,7 @@ __Pyx_RefNannySetupContext("PyInit_cython_nms", 0);
 
   /* "cython_nms.pyx":100
  * def soft_nms(
- *     np.ndarray[float, ndim=2] boxes_in,
+ *     np.ndarray[np.float32_t, ndim=2]  boxes_in,
  *     float sigma=0.5,             # <<<<<<<<<<<<<<
  *     float Nt=0.3,
  *     float threshold=0.001,
@@ -8247,7 +8246,7 @@ __Pyx_RefNannySetupContext("PyInit_cython_nms", 0);
   __Pyx_GOTREF(__pyx_t_2);
 
   /* "cython_nms.pyx":101
- *     np.ndarray[float, ndim=2] boxes_in,
+ *     np.ndarray[np.float32_t, ndim=2]  boxes_in,
  *     float sigma=0.5,
  *     float Nt=0.3,             # <<<<<<<<<<<<<<
  *     float threshold=0.001,
@@ -8398,8 +8397,8 @@ static const __Pyx_StringTabEntry __pyx_string_tab[] = {
   {__pyx_k_ih, sizeof(__pyx_k_ih), 0, 1, 1}, /* PyObject cname: __pyx_n_u_ih */
   {__pyx_k_inds, sizeof(__pyx_k_inds), 0, 1, 1}, /* PyObject cname: __pyx_n_u_inds */
   {__pyx_k_initializing, sizeof(__pyx_k_initializing), 0, 1, 1}, /* PyObject cname: __pyx_n_u_initializing */
-  {__pyx_k_int, sizeof(__pyx_k_int), 0, 1, 1}, /* PyObject cname: __pyx_n_u_int */
   {__pyx_k_inter, sizeof(__pyx_k_inter), 0, 1, 1}, /* PyObject cname: __pyx_n_u_inter */
+  {__pyx_k_intp, sizeof(__pyx_k_intp), 0, 1, 1}, /* PyObject cname: __pyx_n_u_intp */
   {__pyx_k_is_coroutine, sizeof(__pyx_k_is_coroutine), 0, 1, 1}, /* PyObject cname: __pyx_n_u_is_coroutine */
   {__pyx_k_iw, sizeof(__pyx_k_iw), 0, 1, 1}, /* PyObject cname: __pyx_n_u_iw */
   {__pyx_k_ix1, sizeof(__pyx_k_ix1), 0, 1, 1}, /* PyObject cname: __pyx_n_u_ix1 */

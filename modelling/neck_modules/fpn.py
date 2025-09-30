@@ -19,7 +19,7 @@ class FeatureFusion(nn.Module):
     def forward(self,up,main):
         main = self.main_conv(main)
         _,_,H,W = main.size()
-        res = F.upsample(up,scale_factor=2,mode='bilinear') 
+        res = F.interpolate(up, scale_factor=2, mode='bilinear', align_corners=False)
         if res.size(2) != main.size(2) or res.size(3) != main.size(3):
             res = res[:,:,0:H,0:W]
         res = res + main

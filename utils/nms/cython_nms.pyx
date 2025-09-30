@@ -46,7 +46,7 @@ def nms(np.ndarray[np.float32_t, ndim=2] dets, np.float32_t thresh):
 
     cdef int ndets = dets.shape[0]
     cdef np.ndarray[np.intp_t, ndim=1] suppressed = \
-            np.zeros((ndets), dtype=np.int)
+            np.zeros((ndets), dtype=np.intp)
 
     # nominal indices
     cdef int _i, _j
@@ -96,7 +96,7 @@ def nms(np.ndarray[np.float32_t, ndim=2] dets, np.float32_t thresh):
 @cython.cdivision(True)
 @cython.wraparound(False)
 def soft_nms(
-    np.ndarray[float, ndim=2] boxes_in,
+    np.ndarray[np.float32_t, ndim=2]  boxes_in,
     float sigma=0.5,
     float Nt=0.3,
     float threshold=0.001,
